@@ -9,7 +9,8 @@ import shutil
 convert = lambda src, dst: open(dst, "w").write(jinja2.Template(open(src).read()).render(**os.environ))
 
 # Actual startup script
-os.environ["FRONT_ADDRESS"] = socket.gethostbyname("front")
+if "FRONT_ADDRESS" not in os.environ:
+    os.environ["FRONT_ADDRESS"] = socket.gethostbyname("front")
 
 for postfix_file in glob.glob("/conf/*.cf"):
     convert(postfix_file, os.path.join("/etc/postfix", os.path.basename(postfix_file)))

@@ -8,9 +8,11 @@ import glob
 convert = lambda src, dst: open(dst, "w").write(jinja2.Template(open(src).read()).render(**os.environ))
 
 # Actual startup script
-os.environ["FRONT_ADDRESS"] = socket.gethostbyname("front")
-if os.environ["WEBMAIL"] != "none":
-	os.environ["WEBMAIL_ADDRESS"] = socket.gethostbyname("webmail")
+if "FRONT_ADDRESS" not in os.environ:
+    os.environ["FRONT_ADDRESS"] = socket.gethostbyname("front")
+
+if "WEBMAIL_ADDRESS" not in os.environ and os.environ["WEBMAIL"] != "none":
+    os.environ["WEBMAIL_ADDRESS"] = socket.gethostbyname("webmail")
 
 for dovecot_file in glob.glob("/conf/*"):
     convert(dovecot_file, os.path.join("/etc/dovecot", os.path.basename(dovecot_file)))
